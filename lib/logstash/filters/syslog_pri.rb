@@ -2,11 +2,11 @@
 require "logstash/filters/base"
 require "logstash/namespace"
 
-# Filter plugin for logstash to parse the PRI field from the front
+# Filter plugin for logstash to parse the `PRI` field from the front
 # of a Syslog (RFC3164) message.  If no priority is set, it will
 # default to 13 (per RFC).
 #
-# This filter is based on the original syslog.rb code shipped
+# This filter is based on the original `syslog.rb` code shipped
 # with logstash.
 class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
   config_name "syslog_pri"
