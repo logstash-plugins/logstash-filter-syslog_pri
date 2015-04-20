@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 
   s.name            = 'logstash-filter-syslog_pri'
-  s.version         = '0.1.4'
+  s.version         = '0.1.5'
   s.licenses        = ['Apache License (2.0)']
   s.summary         = "Filter plugin for logstash to parse the PRI field from the front of a Syslog (RFC3164) message"
   s.description     = "This gem is a logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/plugin install gemname. This gem is not a stand-alone program"
