@@ -18,9 +18,8 @@ describe LogStash::Filters::Syslog_pri do
 
     subject          { LogStash::Filters::Syslog_pri.new( "syslog_pri_field_name" => "my_syslog_pri" ) }
 
-    let(:msg)        { "<1>Sep 20 02:58:12 porridge3 puppet-master[27025]: Compiled catalog for bigbopper.adm.intranet in environment production in 1.31 seconds\n" }
-    let(:properties) {{ "message" => msg }}
-    let(:event)      { parse(LogStash::Event.new(properties)) }
+    let(:properties) { { "syslog_pri" => 1 } }
+    let(:event)      { LogStash::Event.new(properties) }
 
     before(:each) do
       subject.register
@@ -45,15 +44,15 @@ describe LogStash::Filters::Syslog_pri do
 
   describe "filtering" do
 
-    let(:properties) {{ "message" => msg }}
-    let(:event)      { parse(LogStash::Event.new(properties)) }
+    let(:properties) { { "syslog_pri" => syslog_pri } }
+    let(:event)      { LogStash::Event.new(properties) }
 
     before(:each) do
       subject.register
     end
 
     context "when critical messages arrive" do
-      let(:msg)        { "<34>Sep 20 02:58:12 porridge3 puppet-master[27025]: Compiled catalog for bigbopper.adm.intranet in environment production in 1.31 seconds\n" }
+      let(:syslog_pri) { 34 }
 
       it "syslog severity is critical" do
         subject.filter(event)
@@ -68,7 +67,7 @@ describe LogStash::Filters::Syslog_pri do
     end
 
     context "when notice local messages arrive" do
-      let(:msg)        { "<165>Sep 20 02:58:12 porridge3 puppet-master[27025]: Compiled catalog for bigbopper.adm.intranet in environment production in 1.31 seconds\n" }
+      let(:syslog_pri) { 165 }
 
       it "syslog severity is notice" do
         subject.filter(event)
@@ -82,7 +81,7 @@ describe LogStash::Filters::Syslog_pri do
     end
 
     context "when a debug messages arrive" do
-      let(:msg)        { "<191>Sep 20 02:58:12 porridge3 puppet-master[27025]: Compiled catalog for bigbopper.adm.intranet in environment production in 1.31 seconds\n" }
+      let(:syslog_pri) { 191 }
 
       it "syslog severity is notice" do
         subject.filter(event)
@@ -96,7 +95,7 @@ describe LogStash::Filters::Syslog_pri do
     end
 
     context "when an alert messages arrive" do
-      let(:msg)        { "<137>Sep 20 02:58:12 porridge3 puppet-master[27025]: Compiled catalog for bigbopper.adm.intranet in environment production in 1.31 seconds\n" }
+      let(:syslog_pri) { 137 }
 
       it "syslog severity is notice" do
         subject.filter(event)
