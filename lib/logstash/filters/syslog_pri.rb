@@ -66,7 +66,7 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
 
   public
   def filter(event)
-    return unless filter?(event)
+    
     parse_pri(event)
     filter_matched(event)
   end # def filter
