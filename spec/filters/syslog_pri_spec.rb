@@ -27,17 +27,17 @@ describe LogStash::Filters::Syslog_pri do
 
     it "default syslog_facility is user-level" do
       subject.filter(event)
-      expect(event["syslog_facility"]).to eq("user-level")
+      expect(event.get("syslog_facility")).to eq("user-level")
     end
 
     it "default syslog severity is notice" do
       subject.filter(event)
-      expect(event["syslog_severity"]).to eq("notice")
+      expect(event.get("syslog_severity")).to eq("notice")
     end
 
     it "default severity to be 5, out of priority default 13" do
       subject.filter(event)
-      expect(event["syslog_severity_code"]).to eq(5)
+      expect(event.get("syslog_severity_code")).to eq(5)
     end
 
   end
@@ -56,12 +56,12 @@ describe LogStash::Filters::Syslog_pri do
 
       it "syslog severity is critical" do
         subject.filter(event)
-        expect(event["syslog_severity"]).to eq("critical")
+        expect(event.get("syslog_severity")).to eq("critical")
       end
 
       it "default syslog_facility is user-level" do
         subject.filter(event)
-        expect(event["syslog_facility"]).to eq("security/authorization")
+        expect(event.get("syslog_facility")).to eq("security/authorization")
       end
 
     end
@@ -71,12 +71,12 @@ describe LogStash::Filters::Syslog_pri do
 
       it "syslog severity is notice" do
         subject.filter(event)
-        expect(event["syslog_severity"]).to eq("notice")
+        expect(event.get("syslog_severity")).to eq("notice")
       end
 
       it "default syslog_facility is user-level" do
         subject.filter(event)
-        expect(event["syslog_facility"]).to eq("local4")
+        expect(event.get("syslog_facility")).to eq("local4")
       end
     end
 
@@ -85,12 +85,12 @@ describe LogStash::Filters::Syslog_pri do
 
       it "syslog severity is notice" do
         subject.filter(event)
-        expect(event["syslog_severity"]).to eq("debug")
+        expect(event.get("syslog_severity")).to eq("debug")
       end
 
       it "default syslog_facility is user-level" do
         subject.filter(event)
-        expect(event["syslog_facility"]).to eq("local7")
+        expect(event.get("syslog_facility")).to eq("local7")
       end
     end
 
@@ -99,12 +99,12 @@ describe LogStash::Filters::Syslog_pri do
 
       it "syslog severity is notice" do
         subject.filter(event)
-        expect(event["syslog_severity"]).to eq("alert")
+        expect(event.get("syslog_severity")).to eq("alert")
       end
 
       it "default syslog_facility is user-level" do
         subject.filter(event)
-        expect(event["syslog_facility"]).to eq("local1")
+        expect(event.get("syslog_facility")).to eq("local1")
       end
     end
 

@@ -75,31 +75,31 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
   def parse_pri(event)
     # Per RFC3164, priority = (facility * 8) + severity
     # = (facility << 3) & (severity)
-    if event[@syslog_pri_field_name]
-      if event[@syslog_pri_field_name].is_a?(Array)
-        priority = event[@syslog_pri_field_name].first.to_i
+    if event.get(@syslog_pri_field_name)
+      if event.get(@syslog_pri_field_name).is_a?(Array)
+        priority = event.get(@syslog_pri_field_name).first.to_i
       else
-        priority = event[@syslog_pri_field_name].to_i
+        priority = event.get(@syslog_pri_field_name).to_i
       end
     else
       priority = 13  # default
     end
     severity = priority & 7 # 7 is 111 (3 bits)
     facility = priority >> 3
-    event["syslog_severity_code"] = severity
-    event["syslog_facility_code"] = facility
+    event.set("syslog_severity_code", severity)
+    event.set("syslog_facility_code", facility)
 
     # Add human-readable names after parsing severity and facility from PRI
     if @use_labels
-      facility_number = event["syslog_facility_code"]
-      severity_number = event["syslog_severity_code"]
+      facility_number = event.get("syslog_facility_code")
+      severity_number = event.get("syslog_severity_code")
 
       if @facility_labels[facility_number]
-        event["syslog_facility"] = @facility_labels[facility_number]
+        event.set("syslog_facility", @facility_labels[facility_number])
       end
 
       if @severity_labels[severity_number]
-        event["syslog_severity"] = @severity_labels[severity_number]
+        event.set("syslog_severity", @severity_labels[severity_number])
       end
     end
   end # def parse_pri
