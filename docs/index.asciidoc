@@ -14,7 +14,7 @@ END - GENERATED VARIABLES, DO NOT EDIT!
 
 [id="plugins-{type}-{plugin}"]
 
-=== Syslog_pri
+=== Syslog_pri filter plugin
 
 include::{include_path}/plugin_header.asciidoc[]
 
