@@ -1,6 +1,6 @@
 # Logstash Plugin
 
-[![Travis Build Status](https://travis-ci.org/logstash-plugins/logstash-filter-syslog_pri.svg)](https://travis-ci.org/logstash-plugins/logstash-filter-syslog_pri)
+[![Travis Build Status](https://travis-ci.com/logstash-plugins/logstash-filter-syslog_pri.svg)](https://travis-ci.com/logstash-plugins/logstash-filter-syslog_pri)
 
 This is a plugin for [Logstash](https://github.com/elastic/logstash).
 
