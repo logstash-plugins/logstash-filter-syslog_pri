@@ -1,3 +1,6 @@
+## 3.1.0
+  - Feat: ECS compatiblity [#9](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/9) 
+
 ## 3.0.5
   - Update gemspec summary
 
