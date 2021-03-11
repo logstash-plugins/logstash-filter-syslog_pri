@@ -5,9 +5,9 @@ require "logstash/event"
 
 describe LogStash::Filters::Syslog_pri do
 
-  subject          { LogStash::Filters::Syslog_pri.new( "syslog_pri_field_name" => "syslog_pri" ) }
-  let(:properties) { {:name => "foo" } }
-  let(:event)      { LogStash::Event.new(properties) }
+  subject          { LogStash::Filters::Syslog_pri.new({}) }
+  let(:event_data) { {:name => "foo" } }
+  let(:event)      { LogStash::Event.new(event_data) }
 
   it "should register without errors" do
     plugin = LogStash::Plugin.lookup("filter", "syslog_pri").new( "facility_labels" => ["kernel"] )
@@ -18,8 +18,7 @@ describe LogStash::Filters::Syslog_pri do
 
     subject          { LogStash::Filters::Syslog_pri.new( "syslog_pri_field_name" => "my_syslog_pri" ) }
 
-    let(:properties) { { "syslog_pri" => 1 } }
-    let(:event)      { LogStash::Event.new(properties) }
+    let(:event_data) { { "syslog_pri" => 1 } }
 
     before(:each) do
       subject.register
@@ -44,8 +43,7 @@ describe LogStash::Filters::Syslog_pri do
 
   describe "filtering" do
 
-    let(:properties) { { "syslog_pri" => syslog_pri } }
-    let(:event)      { LogStash::Event.new(properties) }
+    let(:event_data) { { "syslog_pri" => syslog_pri } }
 
     before(:each) do
       subject.register
