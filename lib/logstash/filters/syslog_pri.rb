@@ -5,10 +5,10 @@ require "logstash/namespace"
 # Filter plugin for logstash to parse the `PRI` field from the front
 # of a Syslog (RFC3164) message.  If no priority is set, it will
 # default to 13 (per RFC).
-#
-# This filter is based on the original `syslog.rb` code shipped
-# with logstash.
 class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
+
+  include LogStash::PluginMixins::ECSCompatibilitySupport(:disabled, :v1)
+
   config_name "syslog_pri"
 
   # set the status to experimental/beta/stable
@@ -17,7 +17,8 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
   config :use_labels, :validate => :boolean, :default => true
 
   # Name of field which passes in the extracted PRI part of the syslog message
-  config :syslog_pri_field_name, :validate => :string, :default => "syslog_pri"
+  # default: 'syslog_pri' or '[log][syslog][priority]' with ECS
+  config :syslog_pri_field_name, :validate => :string
 
   # Labels for facility levels. This comes from RFC3164.
   config :facility_labels, :validate => :array, :default => [
@@ -59,48 +60,56 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
     "debug",
   ]
 
-  public
+  def initialize(*params)
+    super
+
+    @facility_code_key = ecs_select[disabled:'syslog_facility_code', v1:'[log][syslog][facility][code]']
+    @severity_code_key = ecs_select[disabled:'syslog_severity_code', v1:'[log][syslog][severity][code]']
+
+    @facility_label_key = ecs_select[disabled:'syslog_facility', v1:'[log][syslog][facility][name]']
+    @severity_label_key = ecs_select[disabled:'syslog_severity', v1:'[log][syslog][severity][name]']
+
+    # config parameter default:
+    @syslog_pri_field_name ||= ecs_select[disabled:'syslog_pri', v1:'[log][syslog][priority]']
+  end
+
   def register
     # Nothing
   end # def register
 
-  public
   def filter(event)
-    
     parse_pri(event)
     filter_matched(event)
   end # def filter
 
   private
+
   def parse_pri(event)
     # Per RFC3164, priority = (facility * 8) + severity
     # = (facility << 3) & (severity)
-    if event.get(@syslog_pri_field_name)
-      if event.get(@syslog_pri_field_name).is_a?(Array)
-        priority = event.get(@syslog_pri_field_name).first.to_i
+    priority = event.get(@syslog_pri_field_name)
+    if priority
+      if priority.is_a?(Array)
+        priority = priority.first.to_i
       else
-        priority = event.get(@syslog_pri_field_name).to_i
+        priority = priority.to_i
       end
     else
       priority = 13  # default
     end
-    severity = priority & 7 # 7 is 111 (3 bits)
-    facility = priority >> 3
-    event.set("syslog_severity_code", severity)
-    event.set("syslog_facility_code", facility)
+
+    severity_code = priority & 7 # 7 is 111 (3 bits)
+    facility_code = priority >> 3
+    event.set(@severity_code_key, severity_code)
+    event.set(@facility_code_key, facility_code)
 
     # Add human-readable names after parsing severity and facility from PRI
     if @use_labels
-      facility_number = event.get("syslog_facility_code")
-      severity_number = event.get("syslog_severity_code")
+      facility_label = @facility_labels[facility_code]
+      event.set(@facility_label_key, facility_label) if facility_label
 
-      if @facility_labels[facility_number]
-        event.set("syslog_facility", @facility_labels[facility_number])
-      end
-
-      if @severity_labels[severity_number]
-        event.set("syslog_severity", @severity_labels[severity_number])
-      end
+      severity_label = @severity_labels[severity_code]
+      event.set(@severity_label_key, severity_label) if severity_label
     end
   end # def parse_pri
 end # class LogStash::Filters::SyslogPRI
