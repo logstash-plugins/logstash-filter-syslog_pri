@@ -16,7 +16,7 @@ describe LogStash::Filters::Syslog_pri do
   end
 
   context 'defaults', :ecs_compatibility_support do
-    ecs_compatibility_matrix(:disabled, :v1) do |ecs_select|
+    ecs_compatibility_matrix(:disabled, :v1, :v8 => :v1) do |ecs_select|
 
       let(:ecs_compatibility?) { ecs_select.active_mode != :disabled }
 

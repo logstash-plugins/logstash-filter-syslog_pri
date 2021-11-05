@@ -7,7 +7,7 @@ require "logstash/namespace"
 # default to 13 (per RFC).
 class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
 
-  include LogStash::PluginMixins::ECSCompatibilitySupport(:disabled, :v1)
+  include LogStash::PluginMixins::ECSCompatibilitySupport(:disabled, :v1, :v8 => :v1)
 
   config_name "syslog_pri"
 
