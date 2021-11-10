@@ -1,3 +1,6 @@
+## 3.1.1
+  - Added preview of ECS-v8 support with existing ECS-v1 implementation [#10](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/10)
+
 ## 3.1.0
   - Feat: ECS compatibility [#9](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/9) 
 
