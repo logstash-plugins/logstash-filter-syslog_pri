@@ -84,6 +84,8 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
 
   private
 
+  SYSLOGPRIPARSEFAILURE_TAG = "_syslogpriparsefailure"
+
   def parse_pri(event)
     # Per RFC3164, priority = (facility * 8) + severity
     # = (facility << 3) & (severity)
@@ -105,9 +107,16 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
 
     # Add human-readable names after parsing severity and facility from PRI
     if @use_labels
-      facility_label = @facility_labels[facility_code]
-      event.set(@facility_label_key, facility_label) if facility_label
+      if facility_code > (@facility_labels.size - 1)
+        # if the facility_code overflow the labels array
+        event.tag(SYSLOGPRIPARSEFAILURE_TAG)
+        logger.warn("Extracted facility code is not present in the labels dictionary", :facility_code => facility_code, :labels_count => @facility_labels.size)
+      else
+        facility_label = @facility_labels[facility_code]
+        event.set(@facility_label_key, facility_label) if facility_label
+      end
 
+      # this is safe because max index is 7
       severity_label = @severity_labels[severity_code]
       event.set(@severity_label_key, severity_label) if severity_label
     end

@@ -172,6 +172,15 @@ describe LogStash::Filters::Syslog_pri do
         end
       end
 
+      context "when malformed messages arrive" do
+        let(:syslog_pri) { 250 }
+
+        it "the event is tagged" do
+          subject.filter(event)
+          expect(event.get("tags")).to include("_syslogpriparsefailure")
+        end
+      end
+
     end
   end
 end

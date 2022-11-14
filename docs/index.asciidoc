@@ -68,6 +68,8 @@ The value of this setting affects the _default_ value of <<plugins-{type}s-{plug
   * Default value is `["kernel", "user-level", "mail", "daemon", "security/authorization", "syslogd", "line printer", "network news", "uucp", "clock", "security/authorization", "ftp", "ntp", "log audit", "log alert", "clock", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7"]`
 
 Labels for facility levels. This comes from RFC3164.
+If an unrecognized facility code is provided and <<plugins-{type}s-{plugin}-use_labels>> is `true` then the event
+is tagged with `_syslogpriparsefailure`.
 
 [id="plugins-{type}s-{plugin}-severity_labels"]
 ===== `severity_labels` 
