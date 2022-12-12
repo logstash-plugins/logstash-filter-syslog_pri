@@ -1,5 +1,5 @@
 ## 3.2.0
-  - Feat: add tagging on unrecognized `facility_label` code [#n](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/n)
+  - Feat: add tagging on unrecognized `facility_label` code [#11](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/11)
 
 ## 3.1.1
   - Added preview of ECS-v8 support with existing ECS-v1 implementation [#10](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/10)
