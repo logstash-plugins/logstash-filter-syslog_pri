@@ -105,11 +105,20 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
 
     # Add human-readable names after parsing severity and facility from PRI
     if @use_labels
-      facility_label = @facility_labels[facility_code]
+      facility_label = retrieve_with_range_check(@facility_labels, facility_code, 'facility_code')
       event.set(@facility_label_key, facility_label) if facility_label
 
-      severity_label = @severity_labels[severity_code]
+      severity_label = retrieve_with_range_check(@severity_labels, severity_code, 'severity_code')
       event.set(@severity_label_key, severity_label) if severity_label
     end
   end # def parse_pri
+
+  def retrieve_with_range_check(array, index, property_name)
+    if index > Java::JavaLang::Long::MAX_VALUE
+      logger.warn("Extracted #{property_name} too big", property_name.to_sym => index, :max_value => Java::JavaLang::Long::MAX_VALUE)
+      nil
+    else
+      array[index]
+    end
+  end
 end # class LogStash::Filters::SyslogPRI
