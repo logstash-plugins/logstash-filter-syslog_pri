@@ -177,7 +177,6 @@ describe LogStash::Filters::Syslog_pri do
 
         it "the event doesn't contain facility string conversion" do
           subject.filter(event)
-          #expect(event.get("tags")).to include("_syslogpriparsefailure")
           if ecs_compatibility?
             expect(event.get("[log][syslog][facility][name]")).to be_nil
             expect(event.get("[log][syslog][facility][code]")).to eq(3749999999999999999999)

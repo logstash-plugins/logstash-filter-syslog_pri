@@ -1,3 +1,6 @@
+## 3.1.2
+  - Fixes range check problem adding validation of severity and facility codes extracted from `syslog_pri_field`. [#13](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/13)
+
 ## 3.1.1
   - Added preview of ECS-v8 support with existing ECS-v1 implementation [#10](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/10)
 
