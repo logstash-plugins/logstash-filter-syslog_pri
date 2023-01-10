@@ -108,7 +108,7 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
     # Add human-readable names after parsing severity and facility from PRI
     return unless @use_labels
 
-    # from Syslog PRI RFC 4.1.1 PRI Part, facility_code could be at most 124
+    # from Syslog PRI RFC 4.1.1 PRI Part, facility_code the maximum possible value is 124, however it defines just 23 values
     if facility_code > (@facility_labels.size - 1)
       # if the facility_code overflow the labels array
       event.tag(SYSLOGPRIPARSEFAILURE_TAG)
