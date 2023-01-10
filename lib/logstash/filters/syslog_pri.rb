@@ -108,7 +108,8 @@ class LogStash::Filters::Syslog_pri < LogStash::Filters::Base
       facility_label = retrieve_with_range_check(@facility_labels, facility_code, 'facility_code')
       event.set(@facility_label_key, facility_label) if facility_label
 
-      severity_label = retrieve_with_range_check(@severity_labels, severity_code, 'severity_code')
+      # severity code is inrange [0..7] by definition, no need to check any bound
+      severity_label = @severity_labels[severity_code]
       event.set(@severity_label_key, severity_label) if severity_label
     end
   end # def parse_pri
