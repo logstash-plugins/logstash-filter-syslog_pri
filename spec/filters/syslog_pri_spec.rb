@@ -172,7 +172,7 @@ describe LogStash::Filters::Syslog_pri do
         end
       end
 
-     context "when malformed messages arrive" do
+      context "when malformed messages arrive" do
         context "if syslog priority value is too high" do
           let(:syslog_pri) { 193 }
           let(:syslog_facility_code_field) { ecs_compatibility? ? "[log][syslog][facility][code]" : "syslog_facility_code" }
@@ -208,6 +208,7 @@ describe LogStash::Filters::Syslog_pri do
             expect(event.get(syslog_severity_code_field)).to eq(1)
           end
         end
+      end
     end
   end
 end
