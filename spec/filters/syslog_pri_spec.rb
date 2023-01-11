@@ -172,6 +172,43 @@ describe LogStash::Filters::Syslog_pri do
         end
       end
 
+      context "when malformed messages arrive" do
+        context "if syslog priority value is too high" do
+          let(:syslog_pri) { 193 }
+          let(:syslog_facility_code_field) { ecs_compatibility? ? "[log][syslog][facility][code]" : "syslog_facility_code" }
+          let(:syslog_severity_code_field) { ecs_compatibility? ? "[log][syslog][severity][code]" : "syslog_severity_code" }
+          let(:syslog_facility_label_field) { ecs_compatibility? ? "[log][syslog][facility][label]" : "syslog_facility" }
+          let(:syslog_severity_label_field) { ecs_compatibility? ? "[log][syslog][severity][label]" : "syslog_severity" }
+
+          before(:each) { subject.filter(event) }
+
+          context "if use_labels is enabled (default)" do
+            it "the event is tagged" do
+              expect(event.get("tags")).to include("_syslogpriparsefailure")
+            end
+            it "the facility label isn't set" do
+              expect(event.get(syslog_facility_label_field)).to be_nil
+            end
+            it "the severity label isn't set" do
+              expect(event.get(syslog_severity_label_field)).to be_nil
+            end
+          end
+
+          context "if use_labels is disabled" do
+            let(:options) { super().merge("use_labels" => false) }
+            it "the event is not tagged" do
+              expect(event.get("tags")).to be_nil
+            end
+          end
+
+          it "the facility code is still set" do
+            expect(event.get(syslog_facility_code_field)).to eq(24)
+          end
+          it "the severity code is still set" do
+            expect(event.get(syslog_severity_code_field)).to eq(1)
+          end
+        end
+      end
     end
   end
 end
