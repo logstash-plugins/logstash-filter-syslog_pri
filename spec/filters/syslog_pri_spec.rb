@@ -130,8 +130,6 @@ describe LogStash::Filters::Syslog_pri do
       context "when malformed messages arrive" do
         context "if syslog priority value is too high" do
           let(:syslog_pri) { 193 }
-          let(:syslog_facility_label_field) { ecs_compatibility? ? "[log][syslog][facility][label]" : "syslog_facility" }
-          let(:syslog_severity_label_field) { ecs_compatibility? ? "[log][syslog][severity][label]" : "syslog_severity" }
 
           before(:each) { subject.filter(event) }
 
@@ -140,10 +138,10 @@ describe LogStash::Filters::Syslog_pri do
               expect(event.get("tags")).to include("_syslogpriparsefailure")
             end
             it "the facility label isn't set" do
-              expect(event.get(syslog_facility_label_field)).to be_nil
+              expect(event.get(syslog_facility_name_field)).to be_nil
             end
             it "the severity label isn't set" do
-              expect(event.get(syslog_severity_label_field)).to be_nil
+              expect(event.get(syslog_severity_name_field)).to be_nil
             end
           end
 
