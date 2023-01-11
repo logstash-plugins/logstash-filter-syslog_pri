@@ -9,6 +9,10 @@ describe LogStash::Filters::Syslog_pri do
   subject          { LogStash::Filters::Syslog_pri.new(options) }
   let(:event_data) { { :name => "foo" } }
   let(:event)      { LogStash::Event.new.tap { |event| event_data.each { |k, v| event.set(k, v) } } }
+  let(:syslog_facility_code_field) { ecs_compatibility? ? "[log][syslog][facility][code]" : "syslog_facility_code" }
+  let(:syslog_facility_name_field) { ecs_compatibility? ? "[log][syslog][facility][name]" : "syslog_facility" }
+  let(:syslog_severity_code_field) { ecs_compatibility? ? "[log][syslog][severity][code]" : "syslog_severity_code" }
+  let(:syslog_severity_name_field) { ecs_compatibility? ? "[log][syslog][severity][name]" : "syslog_severity" }
 
   it "should register without errors" do
     plugin = LogStash::Plugin.lookup("filter", "syslog_pri").new( "facility_labels" => ["kernel"] )
@@ -31,38 +35,22 @@ describe LogStash::Filters::Syslog_pri do
 
       it "default syslog_facility is user-level" do
         subject.filter(event)
-        if ecs_compatibility?
-          expect(event.get("[log][syslog][facility][name]")).to eq("user-level")
-        else
-          expect(event.get("syslog_facility")).to eq("user-level")
-        end
+        expect(event.get(syslog_facility_name_field)).to eq("user-level")
       end
 
       it "default syslog severity is notice" do
         subject.filter(event)
-        if ecs_compatibility?
-          expect(event.get("[log][syslog][severity][name]")).to eq("notice")
-        else
-          expect(event.get("syslog_severity")).to eq("notice")
-        end
+        expect(event.get(syslog_severity_name_field)).to eq("notice")
       end
 
       it "default severity to be 5, out of priority default 13" do
         subject.filter(event)
-        if ecs_compatibility?
-          expect(event.get("[log][syslog][severity][code]")).to eq(5)
-        else
-          expect(event.get("syslog_severity_code")).to eq(5)
-        end
+        expect(event.get(syslog_severity_code_field)).to eq(5)
       end
 
       it "defaults to facility 1" do
         subject.filter(event)
-        if ecs_compatibility?
-          expect(event.get("[log][syslog][facility][code]")).to eq(1)
-        else
-          expect(event.get("syslog_facility_code")).to eq(1)
-        end
+        expect(event.get(syslog_facility_code_field)).to eq(1)
       end
 
     end
@@ -86,20 +74,12 @@ describe LogStash::Filters::Syslog_pri do
 
         it "syslog severity is critical" do
           subject.filter(event)
-          if ecs_compatibility?
-            expect(event.get("[log][syslog][severity][name]")).to eq("critical")
-          else
-            expect(event.get("syslog_severity")).to eq("critical")
-          end
+          expect(event.get(syslog_severity_name_field)).to eq("critical")
         end
 
         it "default syslog_facility is user-level" do
           subject.filter(event)
-          if ecs_compatibility?
-            expect(event.get("[log][syslog][facility][name]")).to eq("security/authorization")
-          else
-            expect(event.get("syslog_facility")).to eq("security/authorization")
-          end
+          expect(event.get(syslog_facility_name_field)).to eq("security/authorization")
         end
 
       end
@@ -109,20 +89,12 @@ describe LogStash::Filters::Syslog_pri do
 
         it "syslog severity is notice" do
           subject.filter(event)
-          if ecs_compatibility?
-            expect(event.get("[log][syslog][severity][name]")).to eq("notice")
-          else
-            expect(event.get("syslog_severity")).to eq("notice")
-          end
+          expect(event.get(syslog_severity_name_field)).to eq("notice")
         end
 
         it "default syslog_facility is user-level" do
           subject.filter(event)
-          if ecs_compatibility?
-            expect(event.get("[log][syslog][facility][name]")).to eq("local4")
-          else
-            expect(event.get("syslog_facility")).to eq("local4")
-          end
+          expect(event.get(syslog_facility_name_field)).to eq("local4")
         end
       end
 
@@ -131,20 +103,12 @@ describe LogStash::Filters::Syslog_pri do
 
         it "syslog severity is notice" do
           subject.filter(event)
-          if ecs_compatibility?
-            expect(event.get("[log][syslog][severity][name]")).to eq("debug")
-          else
-            expect(event.get("syslog_severity")).to eq("debug")
-          end
+          expect(event.get(syslog_severity_name_field)).to eq("debug")
         end
 
         it "default syslog_facility is user-level" do
           subject.filter(event)
-          if ecs_compatibility?
-            expect(event.get("[log][syslog][facility][name]")).to eq("local7")
-          else
-            expect(event.get("syslog_facility")).to eq("local7")
-          end
+          expect(event.get(syslog_facility_name_field)).to eq("local7")
         end
       end
 
@@ -153,32 +117,19 @@ describe LogStash::Filters::Syslog_pri do
 
         it "syslog severity is notice" do
           subject.filter(event)
-          if ecs_compatibility?
-            expect(event.get("[log][syslog][severity][name]")).to eq("alert")
-          else
-            expect(event.get("syslog_severity")).to eq("alert")
-          end
+          expect(event.get(syslog_severity_name_field)).to eq("alert")
         end
 
         it "default syslog_facility is user-level" do
           subject.filter(event)
-          if ecs_compatibility?
-            expect(event.get("[log][syslog][facility][name]")).to eq("local1")
-            expect(event.get("[log][syslog][facility][code]")).to eq(17)
-          else
-            expect(event.get("syslog_facility")).to eq("local1")
-            expect(event.get("syslog_facility_code")).to eq(17)
-          end
+          expect(event.get(syslog_facility_name_field)).to eq("local1")
+          expect(event.get(syslog_facility_code_field)).to eq(17)
         end
       end
 
       context "when malformed messages arrive" do
         context "if syslog priority value is too high" do
           let(:syslog_pri) { 193 }
-          let(:syslog_facility_code_field) { ecs_compatibility? ? "[log][syslog][facility][code]" : "syslog_facility_code" }
-          let(:syslog_severity_code_field) { ecs_compatibility? ? "[log][syslog][severity][code]" : "syslog_severity_code" }
-          let(:syslog_facility_label_field) { ecs_compatibility? ? "[log][syslog][facility][label]" : "syslog_facility" }
-          let(:syslog_severity_label_field) { ecs_compatibility? ? "[log][syslog][severity][label]" : "syslog_severity" }
 
           before(:each) { subject.filter(event) }
 
@@ -187,10 +138,10 @@ describe LogStash::Filters::Syslog_pri do
               expect(event.get("tags")).to include("_syslogpriparsefailure")
             end
             it "the facility label isn't set" do
-              expect(event.get(syslog_facility_label_field)).to be_nil
+              expect(event.get(syslog_facility_name_field)).to be_nil
             end
             it "the severity label isn't set" do
-              expect(event.get(syslog_severity_label_field)).to be_nil
+              expect(event.get(syslog_severity_name_field)).to be_nil
             end
           end
 
