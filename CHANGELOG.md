@@ -1,4 +1,4 @@
-## 3.2.0
+## Unreleased
   - Feat: add tagging on unrecognized `facility_label` code [#11](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/11)
 
 ## 3.1.1
