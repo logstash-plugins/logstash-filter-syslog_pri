@@ -95,7 +95,6 @@ Name of field which passes in the extracted PRI part of the syslog message
   * Value type is <<boolean,boolean>>
   * Default value is `true`
 
-set the status to experimental/beta/stable
 Add human-readable names after parsing severity and facility from PRI
 
 
