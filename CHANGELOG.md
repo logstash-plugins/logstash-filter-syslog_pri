@@ -1,3 +1,6 @@
+## 3.2.1
+  - Remove spurious leftover text from "use_labels" docs [#15](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/15)
+
 ## 3.2.0
   - Feat: add tagging on unrecognized `facility_label` code [#11](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/11)
   - Change: refactored test code to be streamlined when checking ECS fields [#14](https://github.com/logstash-plugins/logstash-filter-syslog_pri/pull/14)
